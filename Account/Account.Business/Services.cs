@@ -9,7 +9,7 @@ using System.Text.Json.Serialization;
 
 namespace Account.Business
 {
-    public class Services //teste
+    public class Services
     {
         private readonly HttpClient _client;
         public Services(HttpClient client)
