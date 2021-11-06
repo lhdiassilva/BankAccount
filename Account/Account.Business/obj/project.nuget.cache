@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "tiw5Trwzd4Sq9suI7COW1zGkKFAf7fo+YrpxDePVKNVOGwWlF5XH2oV7eJeUvQxzNSQC0vWIkbOkOiDhs8p/mg==",
+  "success": true,
+  "projectFilePath": "/home/luizinhodabahia/Documentos/Projetos/Account/Account.Business/Account.Business.csproj",
+  "expectedPackageFiles": [
+    "/home/luizinhodabahia/.nuget/packages/microsoft.netcore.app.ref/5.0.0/microsoft.netcore.app.ref.5.0.0.nupkg.sha512",
+    "/home/luizinhodabahia/.nuget/packages/microsoft.aspnetcore.app.ref/5.0.0/microsoft.aspnetcore.app.ref.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

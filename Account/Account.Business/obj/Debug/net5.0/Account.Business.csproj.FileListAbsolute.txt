@@ -1,0 +1,12 @@
+/home/luizinhodabahia/Documentos/Projetos/Account/Account.Business/obj/Debug/net5.0/Account.Business.csproj.AssemblyReference.cache
+/home/luizinhodabahia/Documentos/Projetos/Account/Account.Business/obj/Debug/net5.0/Account.Business.GeneratedMSBuildEditorConfig.editorconfig
+/home/luizinhodabahia/Documentos/Projetos/Account/Account.Business/obj/Debug/net5.0/Account.Business.AssemblyInfoInputs.cache
+/home/luizinhodabahia/Documentos/Projetos/Account/Account.Business/obj/Debug/net5.0/Account.Business.AssemblyInfo.cs
+/home/luizinhodabahia/Documentos/Projetos/Account/Account.Business/obj/Debug/net5.0/Account.Business.csproj.CoreCompileInputs.cache
+/home/luizinhodabahia/Documentos/Projetos/Account/Account.Business/bin/Debug/net5.0/Account.Business.deps.json
+/home/luizinhodabahia/Documentos/Projetos/Account/Account.Business/bin/Debug/net5.0/Account.Business.dll
+/home/luizinhodabahia/Documentos/Projetos/Account/Account.Business/bin/Debug/net5.0/ref/Account.Business.dll
+/home/luizinhodabahia/Documentos/Projetos/Account/Account.Business/bin/Debug/net5.0/Account.Business.pdb
+/home/luizinhodabahia/Documentos/Projetos/Account/Account.Business/obj/Debug/net5.0/Account.Business.dll
+/home/luizinhodabahia/Documentos/Projetos/Account/Account.Business/obj/Debug/net5.0/ref/Account.Business.dll
+/home/luizinhodabahia/Documentos/Projetos/Account/Account.Business/obj/Debug/net5.0/Account.Business.pdb
