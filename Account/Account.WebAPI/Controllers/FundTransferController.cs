@@ -14,7 +14,6 @@ namespace Account.WebAPI.Controllers
         private readonly Business.Account _account;
         public FundTransferController(Business.Account account)
         {
-        
             _account = account;
         }
 

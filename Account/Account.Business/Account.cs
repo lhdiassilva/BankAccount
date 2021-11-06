@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,132 +7,136 @@ namespace Account.Business
 {
     public class Account
     {
+        private readonly Dictionary<Guid, FundTransfer> _fundTransfers;
+        private readonly Queue<Guid> _fundTransferQueue;
         private Task _processQueueTask;
-        private readonly Dictionary<Guid, FundTransfer> _FundTransfers;
-        private readonly Queue<Guid> _FundTransferQueue;
 
         private readonly Business.Services _services;
         public Account(Business.Services services)
         {
             _services = services;
-            _FundTransfers = new Dictionary<Guid, FundTransfer>();
-            _FundTransferQueue = new Queue<Guid>();
-        }
-
-        public Transaction CreateFundTransfer(FundTransfer fundTransferData)
-        {
-            var transaction = new Transaction();
-
-            _FundTransfers.Add(transaction.transactionId, fundTransferData);
-            _FundTransferQueue.Enqueue(transaction.transactionId);
-
-            if(_processQueueTask?.IsCompleted ?? true)
-                _processQueueTask = ProcessQueue();
-
-            return transaction;
+            _fundTransfers = new Dictionary<Guid, FundTransfer>();
+            _fundTransferQueue = new Queue<Guid>();
         }
 
         public class Transaction
         {
             public Transaction()
             {
-                transactionId = System.Guid.NewGuid();
+                TransactionId = System.Guid.NewGuid();
             }
 
-            public Guid transactionId { get; set; }
-        }
-
-        public FundTransferStatus GetFundTransferStatus(Guid transactionId)
-        {
-            if (_FundTransfers.TryGetValue(transactionId, out FundTransfer value))
-                return value.status;
-            else
-                return new FundTransferStatus(FundTransferStatus.StatusType.Error, "Transaction not found");
+            public Guid TransactionId { get; set; }
         }
 
         public class FundTransferStatus
         {
             public FundTransferStatus()
             {
-                this.statusType = StatusType.InQueue;
+                this.StatusType = StatusTypes.InQueue;
             }
 
-            public FundTransferStatus(StatusType statusType, string message)
+            public FundTransferStatus(StatusTypes statusType, string message)
             {
-                this.statusType = statusType;
-                this.message = message;
+                this.StatusType = statusType;
+                this.Message = message;
             }
 
-            public enum StatusType
+            public enum StatusTypes
             {
                 InQueue,
                 Processing,
                 Confirmed,
                 Error
             }
-            internal StatusType statusType { get; set; }
-            public string status => statusType.ToString();
-            public string message { get; set; }
+            
+            internal StatusTypes StatusType { get; set; }
+            public string Status => StatusType.ToString();
+            public string Message { get; set; }
         }
 
         public class FundTransfer
         {
             public FundTransfer()
             {
-                status = new FundTransferStatus();
+                Status = new FundTransferStatus();
             }
 
-            public string accountOrigin { get; set; }
-            public string accountDestination { get; set; }
-            public double value { get; set; }
-            internal FundTransferStatus status { get; set; }
+            public string AccountOrigin { get; set; }
+            public string AccountDestination { get; set; }
+            public double Value { get; set; }
+            internal FundTransferStatus Status { get; set; }
         }
-        
-        private async Task ProcessQueue() 
-        {
-            while(_FundTransferQueue.Any())
-            {
-                var transaction = _FundTransfers[_FundTransferQueue.Dequeue()];
 
-                if(transaction.status.statusType != FundTransferStatus.StatusType.InQueue)
+        public Transaction CreateFundTransfer(FundTransfer fundTransferData)
+        {
+            var transaction = new Transaction();
+
+            _fundTransfers.Add(transaction.TransactionId, fundTransferData);
+            _fundTransferQueue.Enqueue(transaction.TransactionId);
+
+            if (_processQueueTask?.IsCompleted ?? true)
+                _processQueueTask = ProcessQueue();
+
+            return transaction;
+        }
+
+        public FundTransferStatus GetFundTransferStatus(Guid transactionId)
+        {
+            if (_fundTransfers.TryGetValue(transactionId, out FundTransfer value))
+                return value.Status;
+            else
+                return new FundTransferStatus(FundTransferStatus.StatusTypes.Error, "Transaction not found");
+        }
+
+        private async Task ProcessQueue()
+        {
+            while (_fundTransferQueue.Any())
+            {
+                var transaction = _fundTransfers[_fundTransferQueue.Dequeue()];
+
+                if (transaction.Status.StatusType != FundTransferStatus.StatusTypes.InQueue)
                     continue;
 
-                transaction.status.statusType = FundTransferStatus.StatusType.Processing;
+                transaction.Status.StatusType = FundTransferStatus.StatusTypes.Processing;
 
                 try
                 {
-                    var accountOriginTask = _services.GetAccount(transaction.accountOrigin);
-                    var accountDestinationTask = _services.GetAccount(transaction.accountDestination);
+                    if (transaction.Value <= 0)
+                        throw new Exception("Transaction value must be a positive number");
+
+                    var accountOriginTask = _services.GetAccount(transaction.AccountOrigin);
+                    var accountDestinationTask = _services.GetAccount(transaction.AccountDestination);
 
                     await Task.WhenAll(accountOriginTask, accountDestinationTask);
 
                     var accountOrigin = accountOriginTask.Result;
                     var accountDestination = accountDestinationTask.Result;
 
-                    if (accountOrigin.Balance < transaction.value)
-                        throw new Exception("No funds available on origin account");
+                    if (accountOrigin.Balance < transaction.Value)
+                        throw new Exception("No funds available in origin account");
 
-                    var entry = new Services.Entry(accountOrigin, transaction.value, "Debit");
+                    var entry = new Services.Entry(accountOrigin, transaction.Value, "Debit");
                     await _services.AddEntry(entry);
 
                     try
                     {
-                        entry = new Services.Entry(accountDestination, transaction.value, "Credit");
+                        entry = new Services.Entry(accountDestination, transaction.Value, "Credit");
                         await _services.AddEntry(entry);
                     }
                     catch
                     {
-                        entry = new Services.Entry(accountOrigin, transaction.value, "Credit");
+                        entry = new Services.Entry(accountOrigin, transaction.Value, "Credit");
                         await _services.AddEntry(entry);
                         throw;
                     }
 
-                    transaction.status.statusType = FundTransferStatus.StatusType.Confirmed;
+                    transaction.Status.StatusType = FundTransferStatus.StatusTypes.Confirmed;
                 }
                 catch (System.Exception ex)
                 {
-                    transaction.status.statusType = FundTransferStatus.StatusType.Error;
-                    transaction.status.message = ex.Message;
+                    transaction.Status.StatusType = FundTransferStatus.StatusTypes.Error;
+                    transaction.Status.Message = ex.Message;
                 }
             }
         }
