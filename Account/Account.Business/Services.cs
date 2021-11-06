@@ -66,6 +66,7 @@ namespace Account.Business
         {
             var content = new StringContent(JsonSerializer.Serialize(entry), System.Text.Encoding.UTF8, "application/json");
             var responseMessage = await _client.PostAsync("/api/account", content);
+            
             responseMessage.EnsureSuccessStatusCode();
         }
     }
