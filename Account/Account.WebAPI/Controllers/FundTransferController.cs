@@ -3,12 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Account.WebAPI.Controllers
 {
+    public class LogAttribute : ActionFilterAttribute
+    {
+        public override void OnActionExecuting(ActionExecutingContext actionExecutingContext)
+        {
+            Console.WriteLine($"Request {actionExecutingContext.ActionDescriptor.DisplayName} em {DateTime.Now.ToShortDateString()} às {DateTime.Now.ToShortTimeString()}");
+        }
+
+        public override void OnActionExecuted(ActionExecutedContext actionExecutedContext)
+        {
+        }
+    }
+
     [ApiController]
     [Route("[controller]")]
+    [Log]
     public class FundTransferController : ControllerBase
     {
         private readonly Business.Account _account;

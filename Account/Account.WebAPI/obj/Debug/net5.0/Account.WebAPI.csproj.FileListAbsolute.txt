@@ -28,4 +28,3 @@
 /home/luizinhodabahia/Documentos/Projetos/Account/Account.WebAPI/obj/Debug/net5.0/Account.WebAPI.genruntimeconfig.cache
 /home/luizinhodabahia/Documentos/Projetos/Account/Account.WebAPI/bin/Debug/net5.0/Account.Business.dll
 /home/luizinhodabahia/Documentos/Projetos/Account/Account.WebAPI/bin/Debug/net5.0/Account.Business.pdb
-/home/luizinhodabahia/Documentos/Projetos/Account/Account.WebAPI/obj/Debug/net5.0/Account.WebAPI.csproj.CopyComplete

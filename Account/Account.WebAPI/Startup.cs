@@ -29,6 +29,7 @@ namespace Account.WebAPI
             services.AddHttpClient<Business.Services>("acessoaccount.herokuapp", x => x.BaseAddress = new Uri("https://acessoaccount.herokuapp.com"));
             services.AddSingleton<Business.Account>();
             
+            services.AddMvcCore(x => x.Filters.Add(new Account.WebAPI.Controllers.LogAttribute()));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
